@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MGSU ID Card Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --primary: #d32f2f;
+      --accent: #1e88e5;
+      --border: #d32f2f;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #f0f4f7;
+      padding: 40px;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    h2 {
+      font-size: 28px;
+      color: #d32f2f;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-bottom: 40px;
+      letter-spacing: 2px;
+    }
+
+    .form-container {
+      width: 100%;
+      max-width: 450px;
+      margin-bottom: 30px;
+    }
+
+    .form-container input {
+      margin: 8px 0;
+      padding: 12px;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    .form-container button {
+      width: 100%;
+      padding: 14px;
+      background-color: var(--primary);
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 12px;
+      transition: background-color 0.3s ease;
+    }
+
+    .form-container button:hover {
+      background-color: #c2185b;
+    }
+
+    .id-card {
+      display: none;
+      width: 100%;
+      max-width: 650px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      overflow: hidden;
+      border: 3px solid var(--border);
+      padding: 20px;
+      box-sizing: border-box;
+      font-family: 'Arial', sans-serif;
+    }
+
+    .id-header {
+      background: var(--primary);
+      color: white;
+      padding: 12px 25px;
+      text-align: center;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+      border-radius: 8px;
+    }
+
+    .header-top-text {
+      font-size: 18px;
+      font-family: 'Roboto', sans-serif;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 5px;
+      color: #ffeaea;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      transform: translateX(16px); /* shift to right */
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      transform: translateX(-8px); /* shift to left */
+    }
+
+    .header-content img {
+      width: 70px;
+      height: 70px;
+      border-radius: 10px;
+    }
+
+    .university-name {
+      font-size: 20px;
+      font-weight: bold;
+      text-transform: uppercase;
+      line-height: 1.3;
+      text-align: left;
+      color: #f5f5f5;
+    }
+
+    #timestamp {
+      text-align: center;
+      font-size: 13px;
+      margin-top: 5px;
+      color: #555;
+      font-style: italic;
+    }
+
+    .id-body {
+      padding: 18px 0;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .id-photo {
+      width: 110px;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 2px solid var(--accent);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .id-details {
+      flex-grow: 1;
+      font-size: 18px;
+      color: #333;
+      line-height: 1.7;
+      word-wrap: break-word;
+      white-space: normal;
+    }
+
+    .id-details b {
+      display: inline-block;
+      width: 130px;
+      color: var(--primary);
+    }
+
+    .print-button {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .print-button button {
+      padding: 12px 25px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .print-button button:hover {
+      background: #1e76c6;
+    }
+    .print-warning {
+    background-color: #fff3cd;
+    color: #a94442;
+    border: 1px solid #f5c6cb;
+    padding: 15px 20px;
+    margin-bottom: 25px;
+    border-radius: 8px;
+    font-size: 20px;
+    font-weight: bold;
+    max-width: 700px;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    @media print {
+      body {
+        background: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+    .print-warning {
+    display: none;
+    }
+      body * {
+        visibility: hidden;
+      }
+
+      .id-card, .id-card * {
+        visibility: visible;
+      }
+
+      .id-card {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100% !important;
+        max-width: none !important;
+        border: 3px solid var(--border);
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: none;
+        background: white;
+        box-sizing: border-box;
+      }
+
+      .print-button {
+        display: none;
+      }
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <h2>🆔 MGSU ID Card Generator</h2>
+
+  <div class="form-container">
+    <div class="print-warning">
+      ⚠️ <strong>Caution:</strong> While printing, disable <strong>headers and footers</strong> in the advanced print settings.
+    </div>    
+    <input type="file" accept="image/*" capture="environment" id="imageInput"><br>
+    <input type="text" id="name" placeholder="Name">
+    <input type="text" id="mobile" placeholder="Mobile No.">
+    <input type="text" id="aadhar" placeholder="Aadhar No.">
+    <input type="text" id="meeting" placeholder="Meeting With">
+    <input type="text" id="work" placeholder="Work">
+    <button onclick="generateCard()">Generate ID Card</button>
+  </div>
+
+  <div class="id-card" id="idCard">
+    <div class="id-header">
+      <div class="header-top-text">Temporary Visitor Card</div>
+      <div class="header-content">
+        <img src="logo.png" alt="Logo">
+        <div class="university-name">Maharaja Ganga Singh<br>University, Bikaner</div>
+      </div>
+    </div>
+
+    <!-- Timestamp -->
+    <div id="timestamp"></div>
+
+    <div class="id-body">
+      <img id="idImage" class="id-photo" src="" alt="Photo">
+      <div class="id-details" id="idDetails"></div>
+    </div>
+
+    <div class="print-button">
+      <button onclick="window.print()">🖨️ Print</button>
+    </div>
+  </div>
+
+  <script>
+    let uploadedImage = '';
+
+    document.getElementById('imageInput').addEventListener('change', function (e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          uploadedImage = event.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    function generateCard() {
+      const name = document.getElementById('name').value.trim();
+      const mobile = document.getElementById('mobile').value.trim();
+      const aadhar = document.getElementById('aadhar').value.trim();
+      const meeting = document.getElementById('meeting').value.trim();
+      const work = document.getElementById('work').value.trim();
+
+      if (!name || !mobile || !aadhar || !meeting || !work || !uploadedImage) {
+        alert("Please fill all fields and upload a photo.");
+        return;
+      }
+
+      document.getElementById('idImage').src = uploadedImage;
+      document.getElementById('idDetails').innerHTML = `
+        <b>Name:</b> ${name}<br>
+        <b>Mobile No.:</b> ${mobile}<br>
+        <b>Aadhar No.:</b> ${aadhar}<br>
+        <b>Meeting With:</b> ${meeting}<br>
+        <b>Work:</b> ${work}
+      `;
+
+      // Set timestamp
+      const now = new Date();
+      const formattedDate = now.toLocaleString('en-IN', {
+        day: 'numeric', month: 'long', year: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+      });
+      document.getElementById('timestamp').textContent = `${formattedDate}`;
+
+      document.getElementById('idCard').style.display = 'block';
+
+      setTimeout(() => window.print(), 300);
+    }
+  </script>
+</body>
+</html>
