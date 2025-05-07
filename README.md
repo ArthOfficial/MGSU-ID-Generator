@@ -25,7 +25,9 @@
 ## 🖥️ Live Demo
 
 🔗 [Try It Live (Github)](https://arthofficial.github.io/MGSU-ID-Generator/)
+
 🔗 [My Other Website (Netlify)](https://betterlifesteal.netlify.app)
+
 ---
 
 ## 📸 How It Works
