@@ -5,7 +5,7 @@
 
 ---
 
-![Preview](https://ibb.co/Jw2qn7Wb) <!-- Replace this with your own GIF or screenshot -->
+![Preview](https://i.ibb.co/S40cNnD1/Screenshot-2025-05-07-215022.png) <!-- Replace this with your own GIF or screenshot -->
 
 ---
 
