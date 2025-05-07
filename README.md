@@ -24,9 +24,8 @@
 
 ## 🖥️ Live Demo
 
-🔗 [Try it Live (Netlify)](https://betterlifesteal.netlify.app)  
-*(Replace this link with your deployed site if different)*
-
+🔗 [Try it Live (Github)]([https://arthofficial.github.io/MGSU-ID-Generator/index])  
+🔗 [My Other Website (Netlify)]([https://betterlifesteal.netlify.app])
 ---
 
 ## 📸 How It Works
@@ -53,4 +52,4 @@
 
 1. Clone the repository  
 ```bash
-git clone https://github.com/your-username/mgsu-id-card-generator.git
+git clone https://github.com/ArthOfficial/MGSU-ID-Generator.git
