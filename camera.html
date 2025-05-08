@@ -72,9 +72,11 @@
             width: 100%;
             max-width: 450px;
             margin-bottom: 30px;
+            display: flex;
+            flex-direction: column; /* Arrange buttons vertically */
         }
 
-        .form-container input, .form-container button {
+        .form-container button, .form-container input {
             margin: 8px 0;
             padding: 12px;
             width: 100%;
@@ -155,9 +157,8 @@
         .id-body {
             padding: 18px 0;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
         }
 
         .id-photo {
@@ -172,6 +173,7 @@
             flex-grow: 1;
             font-size: 18px;
             color: #333;
+            margin-left: 20px;
         }
 
         .id-details b {
@@ -252,7 +254,14 @@
         <div class="print-warning">
             ⚠️ <strong>Print Tip:</strong> Disable headers and footers before printing for best results.
         </div>
-        <button onclick="handlePhotoChoice()">📸 Add Photo</button>
+        <button onclick="choosePhotoMethod()">📸 Add Photo</button>
+        <button id="phonePhotoButton" onclick="triggerPhoneCamera()">📱Phone Photo</button>
+        <button id="phoneGalleryButton" onclick="triggerPhoneGallery()">🖼️Phone Gallery</button>
+        <div id="mobilePhotoInstructions" style="display: none; font-size: 12px; color: #777; margin-top: 5px; text-align: center;">
+            Tap "Phone Photo" to use your camera or "Phone Gallery" to choose from your library.
+        </div>
+        <input type="file" id="phoneCameraInput" accept="image/*" capture="camera" style="display: none;" onchange="readImageFile(this.files[0])">
+        <input type="file" id="phoneGalleryInput" accept="image/*" style="display: none;" onchange="readImageFile(this.files[0])">
         <input type="text" id="name" placeholder="Name">
         <input type="text" id="mobile" placeholder="Mobile No." oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)">
         <input type="text" id="aadhar" placeholder="Aadhar No." oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 15)">
@@ -273,9 +282,14 @@
             </div>
         </div>
         <div id="timestamp"></div>
-        <div class="id-body">
-            <img id="idImage" class="id-photo" src="" alt="Photo">
-            <div class="id-details" id="idDetails"></div>
+        <div class="id-body" style="display: flex; flex-direction: column; align-items: center;">
+            <div style="display: flex; flex-wrap: wrap; align-items: flex-start; width: 100%;">
+                <img id="idImage" class="id-photo" src="" alt="Photo">
+                <div class="id-details" id="idDetails" style="flex-grow: 1; margin-left: 20px;"></div>
+            </div>
+            <div style="font-size: 12px; color: #555; margin-top: 10px; text-align: center; width: 100%;">
+                Valid for the same day during official hours.
+            </div>
         </div>
         <div class="print-button">
             <button onclick="window.print()">🖨️ Print</button>
@@ -290,20 +304,40 @@
         let stream = null;
         let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-        function handlePhotoChoice() {
-            if (confirm("For Webcam Click OK. Click Cancel to upload from Gallery. On Phone Click Cancel For Both.")) {
-                // User clicked "OK" (wants to use the camera)
-                startCamera();
-                document.getElementById('video').scrollIntoView({ behavior: 'smooth', block: 'start' });
-                alert("Scroll down to capture. Wait 3 Seconds.");
-            } else {
-                // User clicked "Cancel" (wants to choose from gallery)
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = 'image/*';
-                input.onchange = e => readImageFile(e.target.files[0]);
-                input.click();
+        const phonePhotoButton = document.getElementById('phonePhotoButton');
+        const phoneGalleryButton = document.getElementById('phoneGalleryButton');
+        const phoneCameraInput = document.getElementById('phoneCameraInput');
+        const phoneGalleryInput = document.getElementById('phoneGalleryInput');
+        const mobilePhotoInstructions = document.getElementById('mobilePhotoInstructions');
+
+        // Show the "Phone Photo" and "Phone Gallery" buttons and instructions only on mobile
+        if (isMobile) {
+            phonePhotoButton.style.display = 'inline-block';
+            phoneGalleryButton.style.display = 'inline-block';
+            mobilePhotoInstructions.style.display = 'block';
+        } else {
+            phonePhotoButton.style.display = 'inline-block'; // Still show on desktop
+            phoneGalleryButton.style.display = 'inline-block'; // Still show on desktop
+            mobilePhotoInstructions.style.display = 'none'; // Hide instructions on desktop
+            // Optionally, on desktop, you might want to hide the "Phone Photo" and "Phone Gallery" buttons
+            // phonePhotoButton.style.display = 'none';
+            // phoneGalleryButton.style.display = 'none';
+        }
+
+        function choosePhotoMethod() {
+            // Keep the original functionality for the "Add Photo" button on desktop
+            if (!isMobile) {
+                phoneGalleryInput.click(); // On desktop, "Add Photo" will now trigger gallery
             }
+            // On mobile, the separate buttons will handle camera and gallery
+        }
+
+        function triggerPhoneCamera() {
+            phoneCameraInput.click(); // Trigger the hidden camera input
+        }
+
+        function triggerPhoneGallery() {
+            phoneGalleryInput.click(); // Trigger the hidden gallery input
         }
 
         function startCamera() {
@@ -329,7 +363,7 @@
             video.style.display = 'none';
             document.getElementById('captureBtn').style.display = 'none';
             if (stream) stream.getTracks().forEach(track => track.stop());
-            alert("Photo captured successfully! Wait 3 Second.");
+            alert("Photo captured successfully!");
         }
 
         function readImageFile(file) {
@@ -337,7 +371,7 @@
                 const reader = new FileReader();
                 reader.onload = e => {
                     uploadedImage = e.target.result;
-                    alert("Image uploaded successfully! Wait 3 Second.");
+                    alert("Image uploaded successfully! Wait 3 Second");
                 };
                 reader.readAsDataURL(file);
             }
