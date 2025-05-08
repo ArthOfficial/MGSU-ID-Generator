@@ -302,111 +302,89 @@
     <script>
         let uploadedImage = '';
         let stream = null;
-        let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-        const phonePhotoButton = document.getElementById('phonePhotoButton');
-        const phoneGalleryButton = document.getElementById('phoneGalleryButton');
-        const phoneCameraInput = document.getElementById('phoneCameraInput');
-        const phoneGalleryInput = document.getElementById('phoneGalleryInput');
-        const mobilePhotoInstructions = document.getElementById('mobilePhotoInstructions');
-
-        // Show the "Phone Photo" and "Phone Gallery" buttons and instructions only on mobile
-        if (isMobile) {
-            phonePhotoButton.style.display = 'inline-block';
-            phoneGalleryButton.style.display = 'inline-block';
-            mobilePhotoInstructions.style.display = 'block';
-        } else {
-            phonePhotoButton.style.display = 'inline-block'; // Still show on desktop
-            phoneGalleryButton.style.display = 'inline-block'; // Still show on desktop
-            mobilePhotoInstructions.style.display = 'none'; // Hide instructions on desktop
-            // Optionally, on desktop, you might want to hide the "Phone Photo" and "Phone Gallery" buttons
-            // phonePhotoButton.style.display = 'none';
-            // phoneGalleryButton.style.display = 'none';
-        }
-
-        function choosePhotoMethod() {
-            // Keep the original functionality for the "Add Photo" button on desktop
-            if (!isMobile) {
-                phoneGalleryInput.click(); // On desktop, "Add Photo" will now trigger gallery
-            }
-            // On mobile, the separate buttons will handle camera and gallery
-        }
-
+      
         function triggerPhoneCamera() {
-            phoneCameraInput.click(); // Trigger the hidden camera input
+          document.getElementById('phoneCameraInput').click();
         }
-
+      
         function triggerPhoneGallery() {
-            phoneGalleryInput.click(); // Trigger the hidden gallery input
+          document.getElementById('phoneGalleryInput').click();
         }
-
-        function startCamera() {
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(s => {
-                    stream = s;
-                    const video = document.getElementById('video');
-                    video.srcObject = stream;
-                    video.style.display = 'block';
-                    document.getElementById('captureBtn').style.display = 'inline-block';
-                })
-                .catch(err => alert("Camera not accessible: " + err));
-        }
-
-        function capturePhoto() {
-            const video = document.getElementById('video');
-            const canvas = document.createElement('canvas');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(video, 0, 0);
-            uploadedImage = canvas.toDataURL('image/png');
-            video.style.display = 'none';
-            document.getElementById('captureBtn').style.display = 'none';
-            if (stream) stream.getTracks().forEach(track => track.stop());
-            alert("Photo captured successfully!");
-        }
-
+      
         function readImageFile(file) {
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = e => {
-                    uploadedImage = e.target.result;
-                    alert("Image uploaded successfully! Wait 3 Second");
-                };
-                reader.readAsDataURL(file);
-            }
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+              uploadedImage = e.target.result;
+              document.getElementById('idImage').src = uploadedImage;
+            };
+            reader.readAsDataURL(file);
+          }
         }
-
+      
+        function choosePhotoMethod() {
+          const confirmChoice = confirm("Click OK to upload from Webcam. \n Click Cancel to upload from Gallery. \n Wait 3 Second.");
+          
+          if (confirmChoice) {
+            const video = document.getElementById('video');
+            const captureBtn = document.getElementById('captureBtn');
+      
+            navigator.mediaDevices.getUserMedia({ video: true })
+              .then(s => {
+                stream = s;
+                video.srcObject = stream;
+                video.style.display = 'block';
+                captureBtn.style.display = 'inline-block';
+              })
+              .catch(err => {
+                alert('Could not access camera. Please check permissions.');
+                console.error(err);
+              });
+          } else {
+            triggerPhoneGallery();
+          }
+        }
+      
+        function capturePhoto() {
+          const video = document.getElementById('video');
+          const canvas = document.createElement('canvas');
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+      
+          const context = canvas.getContext('2d');
+          context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+          const dataUrl = canvas.toDataURL('image/png');
+          uploadedImage = dataUrl;
+          document.getElementById('idImage').src = uploadedImage;
+      
+          if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+            stream = null;
+          }
+      
+          video.style.display = 'none';
+          document.getElementById('captureBtn').style.display = 'none';
+        }
+      
         function generateCard() {
-            const name = document.getElementById('name').value.trim();
-            const mobile = document.getElementById('mobile').value.trim();
-            const aadhar = document.getElementById('aadhar').value.trim();
-            const meeting = document.getElementById('meeting').value.trim();
-            const work = document.getElementById('work').value.trim();
-
-            if (!name || !mobile || !aadhar || !meeting || !work || !uploadedImage) {
-                alert("Please fill all fields and add a photo.");
-                return;
-            }
-
-            document.getElementById('idImage').src = uploadedImage;
-            document.getElementById('idDetails').innerHTML = `
-                <b>Name:</b> ${name}<br>
-                <b>Mobile No.:</b> ${mobile}<br>
-                <b>Aadhar No.:</b> ${aadhar}<br>
-                <b>Meeting With:</b> ${meeting}<br>
-                <b>Work:</b> ${work}`;
-
-            const now = new Date();
-            document.getElementById('timestamp').textContent =
-                now.toLocaleString('en-IN', {
-                    day: 'numeric', month: 'long', year: 'numeric',
-                    hour: '2-digit', minute: '2-digit'
-                });
-
-            document.getElementById('idCard').style.display = 'block';
-            // No need to automatically trigger print here
+          const name = document.getElementById('name').value.trim();
+          const mobile = document.getElementById('mobile').value.trim();
+          const aadhar = document.getElementById('aadhar').value.trim();
+          const meeting = document.getElementById('meeting').value.trim();
+          const work = document.getElementById('work').value.trim();
+      
+          const detailsHTML = `
+            <div><b>Name:</b> ${name}</div>
+            <div><b>Mobile:</b> ${mobile}</div>
+            <div><b>Aadhar:</b> ${aadhar}</div>
+            <div><b>Meeting With:</b> ${meeting}</div>
+            <div><b>Work:</b> ${work}</div>
+          `;
+          document.getElementById('idDetails').innerHTML = detailsHTML;
+          document.getElementById('timestamp').innerText = `Generated on: ${new Date().toLocaleString()}`;
+          document.getElementById('idCard').style.display = 'block';
         }
-    </script>
+      </script>  
 </body>
-</html>
+</html> 
