@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MGSU ID Card Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --primary: #d32f2f;
+      --accent: #1e88e5;
+      --border: #d32f2f;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #f0f4f7;
+      padding: 40px;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    h1.channel-title {
+      font-size: 32px;
+      color: #1e88e5;
+      margin-bottom: 15px;
+      font-weight: bold;
+      text-transform: uppercase;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+
+    h2 {
+      font-size: 28px;
+      color: #d32f2f;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-bottom: 30px;
+      letter-spacing: 2px;
+    }
+
+    .form-container {
+      width: 100%;
+      max-width: 450px;
+      margin-bottom: 30px;
+    }
+
+    .form-container input, .form-container button {
+      margin: 8px 0;
+      padding: 12px;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    .form-container button {
+      background-color: var(--primary);
+      color: white;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .form-container button:hover {
+      background-color: #c2185b;
+    }
+
+    .id-card {
+      display: none;
+      width: 100%;
+      max-width: 650px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      overflow: hidden;
+      border: 3px solid var(--border);
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .id-header {
+      background: var(--primary);
+      color: white;
+      padding: 12px 25px;
+      text-align: center;
+      border-radius: 8px;
+    }
+
+    .header-top-text {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 5px;
+      color: #ffeaea;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .header-content img {
+      width: 70px;
+      height: 70px;
+      border-radius: 10px;
+    }
+
+    .university-name {
+      font-size: 20px;
+      font-weight: bold;
+      line-height: 1.3;
+      color: #f5f5f5;
+    }
+
+    #timestamp {
+      text-align: center;
+      font-size: 13px;
+      margin-top: 5px;
+      color: #555;
+      font-style: italic;
+    }
+
+    .id-body {
+      padding: 18px 0;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .id-photo {
+      width: 110px;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 2px solid var(--accent);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .id-details {
+      flex-grow: 1;
+      font-size: 18px;
+      color: #333;
+      line-height: 1.7;
+    }
+
+    .id-details b {
+      display: inline-block;
+      width: 130px;
+      color: var(--primary);
+    }
+
+    .print-button {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .print-button button {
+      padding: 12px 25px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .print-button button:hover {
+      background: #1e76c6;
+    }
+
+    .print-warning {
+      background-color: #fff3cd;
+      color: #a94442;
+      border: 1px solid #f5c6cb;
+      padding: 15px 20px;
+      margin-bottom: 25px;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: bold;
+      max-width: 700px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    video {
+      display: none;
+    }
+
+    @media print {
+      body, .print-warning {
+        background: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .print-warning, .form-container, .channel-title, h2 {
+        display: none;
+      }
+      body * {
+        visibility: hidden;
+      }
+
+      .id-card, .id-card * {
+        visibility: visible;
+      }
+
+      .id-card {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100% !important;
+        max-width: none !important;
+        border: 3px solid var(--border);
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: none;
+        background: white;
+      }
+
+      .print-button {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1 class="channel-title">Subscribe to NarcoGam3X</h1>
+  <h2>🆔 MGSU ID Card Generator</h2>
+
+  <div class="form-container">
+    <div class="print-warning">
+      ⚠️ <strong>Caution:</strong> While printing, disable <strong>headers and footers</strong> in advanced print settings.
+    </div>
+
+    <button onclick="handlePhotoInput()">📸 Add Photo</button>
+    <input type="text" id="name" placeholder="Name">
+    <input type="text" id="mobile" placeholder="Mobile No.">
+    <input type="text" id="aadhar" placeholder="Aadhar No.">
+    <input type="text" id="meeting" placeholder="Meeting With">
+    <input type="text" id="work" placeholder="Work">
+    <button onclick="generateCard()">Generate ID Card</button>
+  </div>
+
+  <video id="video" autoplay playsinline></video>
+
+  <div class="id-card" id="idCard">
+    <div class="id-header">
+      <div class="header-top-text">Temporary Visitor Card</div>
+      <div class="header-content">
+        <img src="logo.png" alt="Logo">
+        <div class="university-name">Maharaja Ganga Singh<br>University, Bikaner</div>
+      </div>
+    </div>
+
+    <div id="timestamp"></div>
+
+    <div class="id-body">
+      <img id="idImage" class="id-photo" src="" alt="Photo">
+      <div class="id-details" id="idDetails"></div>
+    </div>
+
+    <div class="print-button">
+      <button onclick="window.print()">🖨️ Print</button>
+    </div>
+  </div>
+
+  <script>
+    let uploadedImage = '';
+    let stream = null;
+  
+    function handlePhotoInput() {
+      if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        // For mobile: direct camera use
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.capture = 'environment';
+        input.onchange = e => readImageFile(e.target.files[0]);
+        input.click();
+      } else {
+        const choice = confirm("Click OK to use your webcam.\nClick Cancel to upload a photo.");
+        if (choice) {
+          startWebcam();
+        } else {
+          const input = document.createElement('input');
+          input.type = 'file';
+          input.accept = 'image/*';
+          input.onchange = e => readImageFile(e.target.files[0]);
+          input.click();
+        }
+      }
+    }
+  
+    function readImageFile(file) {
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          uploadedImage = e.target.result;
+          alert("Image uploaded successfully!");
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+  
+    function startWebcam() {
+      const video = document.getElementById('video');
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(camStream => {
+          stream = camStream;
+          video.srcObject = stream;
+          video.style.display = 'block';
+  
+          // Create and show capture button
+          let captureBtn = document.getElementById('captureBtn');
+          if (!captureBtn) {
+            captureBtn = document.createElement('button');
+            captureBtn.textContent = '📸 Capture Photo';
+            captureBtn.id = 'captureBtn';
+            captureBtn.style.marginTop = '10px';
+            captureBtn.style.padding = '10px 20px';
+            captureBtn.style.backgroundColor = '#1e88e5';
+            captureBtn.style.color = 'white';
+            captureBtn.style.border = 'none';
+            captureBtn.style.borderRadius = '5px';
+            captureBtn.style.cursor = 'pointer';
+            captureBtn.onclick = capturePhoto;
+            document.body.insertBefore(captureBtn, document.getElementById('idCard'));
+          } else {
+            captureBtn.style.display = 'inline-block';
+          }
+        })
+        .catch(err => alert("Webcam access denied or not available."));
+    }
+  
+    function capturePhoto() {
+      const video = document.getElementById('video');
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      canvas.getContext('2d').drawImage(video, 0, 0);
+      uploadedImage = canvas.toDataURL();
+      
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+  
+      video.style.display = 'none';
+      document.getElementById('captureBtn').style.display = 'none';
+      alert("Photo captured from webcam!");
+    }
+  
+    function generateCard() {
+      const name = document.getElementById('name').value.trim();
+      const mobile = document.getElementById('mobile').value.trim();
+      const aadhar = document.getElementById('aadhar').value.trim();
+      const meeting = document.getElementById('meeting').value.trim();
+      const work = document.getElementById('work').value.trim();
+  
+      if (!name || !mobile || !aadhar || !meeting || !work || !uploadedImage) {
+        alert("Please fill all fields and upload or capture a photo.");
+        return;
+      }
+  
+      document.getElementById('idImage').src = uploadedImage;
+      document.getElementById('idDetails').innerHTML = `
+        <b>Name:</b> ${name}<br>
+        <b>Mobile No.:</b> ${mobile}<br>
+        <b>Aadhar No.:</b> ${aadhar}<br>
+        <b>Meeting With:</b> ${meeting}<br>
+        <b>Work:</b> ${work}
+      `;
+  
+      const now = new Date();
+      document.getElementById('timestamp').textContent =
+        now.toLocaleString('en-IN', {
+          day: 'numeric', month: 'long', year: 'numeric',
+          hour: '2-digit', minute: '2-digit'
+        });
+  
+      document.getElementById('idCard').style.display = 'block';
+      setTimeout(() => window.print(), 300);
+    }
+  </script>
+  
+</body>
+</html>
